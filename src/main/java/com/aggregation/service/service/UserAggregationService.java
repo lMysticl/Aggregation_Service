@@ -130,14 +130,20 @@ public class UserAggregationService {
     }
 
     public List<User> searchUsers(String username, String name) {
-        log.debug("Searching users with username: {}, name: {}", username, name);
+        List<User> result = new ArrayList<>();
 
         if (username != null && !username.isEmpty()) {
-            return searchByUsername(username);
+            result.addAll(searchByUsername(username));
         } else if (name != null && !name.isEmpty()) {
-            return searchByName(name);
+            result.addAll(searchByName(name));
+        } else {
+            result.addAll(getAllUsers());
         }
 
-        return getAllUsers();
+        return result;
+    }
+
+    public User createUser(User user) {
+        return postgresUserRepository.save(user);
     }
 }
