@@ -1,0 +1,36 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/users_db
+      database: users_db
+      auto-index-creation: true
+      authentication-database: admin
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users_db
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=300s
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: Aggregation-Service
+
+logging:
+  level:
+    com.aggregation.service: DEBUG
+    org.springframework.data: INFO
+    org.hibernate.SQL: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.data.jpa: DEBUG
