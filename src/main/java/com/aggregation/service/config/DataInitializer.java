@@ -4,6 +4,7 @@ import com.aggregation.service.model.MongoUser;
 import com.aggregation.service.model.User;
 import com.aggregation.service.repository.MongoUserRepository;
 import com.aggregation.service.repository.PostgresUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -11,24 +12,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 @Configuration
+@Slf4j
 public class DataInitializer {
-    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     @Bean
     CommandLineRunner initPostgresDatabase(PostgresUserRepository postgresRepo) {
         return args -> {
             log.info("Initializing PostgreSQL database with dummy data");
-            
-            List<User> postgresUsers = Arrays.asList(
-                createUser("John", "Doe", "johndoe"),
-                createUser("Jane", "Smith", "janesmith"),
-                createUser("Bob", "Johnson", "bjohnson"),
-                createUser("Alice", "Brown", "abrown"),
-                createUser("Charlie", "Davis", "cdavis")
+            postgresRepo.deleteAll();
+
+            List<User> postgresUsers = Collections.singletonList(
+                    User.builder()
+                            .id("7d6d939c-74c2-45a1-924c-8ba608a7b1cf")
+                            .username("user-1")
+                            .name("User")
+                            .surname("Userenko")
+                            .build()
             );
 
             postgresRepo.saveAll(postgresUsers);
@@ -40,13 +44,15 @@ public class DataInitializer {
     CommandLineRunner initMongoDatabase(MongoUserRepository mongoRepo) {
         return args -> {
             log.info("Initializing MongoDB database with dummy data");
+            mongoRepo.deleteAll();
             
-            List<MongoUser> mongoUsers = Arrays.asList(
-                createMongoUser("Michael", "Wilson", "mwilson"),
-                createMongoUser("Sarah", "Taylor", "staylor"),
-                createMongoUser("David", "Anderson", "danderson"),
-                createMongoUser("Emily", "Thomas", "ethomas"),
-                createMongoUser("James", "Martin", "jmartin")
+            List<MongoUser> mongoUsers = Collections.singletonList(
+                    MongoUser.builder()
+                            .id("7d6d939c-74c2-45a1-924c-8ba608a7b3")
+                            .username("user-2")
+                            .firstName("Testuser")
+                            .lastName("Testov")
+                            .build()
             );
 
             mongoRepo.saveAll(mongoUsers);
@@ -54,21 +60,4 @@ public class DataInitializer {
         };
     }
 
-    private User createUser(String firstName, String lastName, String username) {
-        User user = new User();
-        user.setId(UUID.randomUUID().toString());
-        user.setUsername(username);
-        user.setName(firstName);
-        user.setSurname(lastName);
-        return user;
-    }
-
-    private MongoUser createMongoUser(String firstName, String lastName, String username) {
-        MongoUser user = new MongoUser();
-        user.setId(UUID.randomUUID().toString());
-        user.setUsername(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        return user;
-    }
 }
