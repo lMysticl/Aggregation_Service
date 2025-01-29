@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.List;
 
@@ -31,6 +33,15 @@ class UserAggregationIntegrationTest {
 
     @Autowired
     private MongoUserRepository mongoUserRepository;
+
+    @Autowired
+    private MongoTestConfig mongoTestConfig;
+
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.uri", () -> 
+            "mongodb://localhost:27017/test");
+    }
 
     @BeforeEach
     void setUp() {

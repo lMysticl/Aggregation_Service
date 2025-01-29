@@ -1,31 +1,55 @@
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/users_db
-      database: users_db
-      auto-index-creation: true
-      authentication-database: admin
-  datasource:
-    url: jdbc:postgresql://localhost:5432/users_db
-    username: postgres
-    password: root
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  application:
+    name: Aggregation-Service
+  main:
+    allow-bean-definition-overriding: true
   cache:
     type: caffeine
     caffeine:
       spec: maximumSize=500,expireAfterWrite=300s
-  main:
-    allow-bean-definition-overriding: true
-  application:
-    name: Aggregation-Service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+data-sources:
+  sources:
+    - name: data-base-1
+      type: jdbc
+      strategy: h2
+      url: jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1
+      table: users
+      username: sa
+      password: 
+      primary: true
+      priority: 100
+      mapping:
+        id: id
+        username: username
+        name: first_name
+        surname: last_name
+        
+    - name: data-base-2
+      type: jdbc
+      strategy: h2
+      url: jdbc:h2:mem:db2;DB_CLOSE_DELAY=-1
+      table: users
+      username: sa
+      password: 
+      priority: 90
+      mapping:
+        id: id
+        username: username
+        name: first_name
+        surname: last_name
+
+    - name: mongodb-users
+      type: mongodb
+      url: mongodb://localhost:27017/users
+      priority: 80
 
 management:
   endpoints:
@@ -49,7 +73,7 @@ logging:
   level:
     com.aggregation.service: DEBUG
     org.springframework.data: INFO
-    org.hibernate.SQL: DEBUG
+    org.hibernate: INFO
     org.springframework.data.mongodb: DEBUG
     org.springframework.data.jpa: DEBUG
     org.springframework.boot.actuate: DEBUG

@@ -1,23 +1,33 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb://mongodb:27017/users_db
-      database: users_db
-      auto-index-creation: true
-      authentication-database: admin
-  datasource:
-    url: jdbc:postgresql://postgres:5432/users_db
-    username: postgres
-    password: root
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+app:
+  datasources:
+    sources:
+      - name: postgres-primary
+        type: jdbc
+        url: jdbc:postgresql://postgres:5432/users_db
+        username: postgres
+        password: root
+        driver-class-name: org.postgresql.Driver
+        primary: true
+        priority: 100
+        max-pool-size: 10
+        min-pool-size: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        validation-query: SELECT 1
+        properties:
+          hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+          hibernate.hbm2ddl.auto: update
+          hibernate.show_sql: true
+          hibernate.format_sql: true
+
+      - name: mongodb-secondary
+        type: mongodb
+        url: mongodb://mongodb:27017/users_db
+        priority: 90
+        properties:
+          database: users_db
+          auto-index-creation: true
+          authentication-database: admin
 
 management:
   endpoints:
