@@ -15,7 +15,6 @@ app:
         idle-timeout: 600000
         validation-query: SELECT 1
         properties:
-          hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
           hibernate.hbm2ddl.auto: update
           hibernate.show_sql: true
           hibernate.format_sql: true
@@ -28,6 +27,10 @@ app:
           database: users_db
           auto-index-creation: true
           authentication-database: admin
+
+spring:
+  jpa:
+    open-in-view: false
 
 management:
   endpoints:

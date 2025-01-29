@@ -14,6 +14,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
     show-sql: true
+    open-in-view: false
 
 data-sources:
   sources:
